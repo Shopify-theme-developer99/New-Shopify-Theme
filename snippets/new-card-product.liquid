@@ -1,0 +1,224 @@
+{% if product.available %}
+<div class="card-product-wrapper" id="{{ product.handle }}">
+  <a href="{{ product.url }}">
+    <div class="product_tag_save_wrapper {% unless product.compare_at_price > product.price and product.compare_at_price > 0 %}no-saving{% endunless %}">
+      {% if product.compare_at_price > product.price and product.compare_at_price > 0 %}
+        {% assign discount_amount = product.compare_at_price | minus: product.price %}
+        {% assign discount_percentage = discount_amount | times: 100.0 | divided_by: product.compare_at_price %}
+        <span class="discount_tag"><span>save</span>{{ discount_percentage | round }}%</span>
+      {% endif %}
+
+     
+          <div class="wishlist_collection_tag_wrapper">
+            <span class="product_best_seller">Best <br> Seller</span>
+            <div class="wishlist">
+              <div class='vt-wishlist-custom-plp' data-product-id='{{ product.id }}' data-product-handle='{{ product.handle }}' data-variant-id="{{ product.selected_or_first_available_variant.id }}"></div>
+            </div>
+          </div>
+   
+
+        
+    </div>
+  
+    <div class="product_image_wrapper">
+      {% for image in product.images %}
+        {% if forloop.index == 1 %}
+        <img src="{{ image | image_url }}" class="product_image_1">
+        {% endif %}
+        {% if forloop.index == 2 %}
+        <img src="{{ image | image_url }}" class="product_image_2">
+        {% endif %}
+      {% endfor %}
+
+{% assign product_first_variant_discounted_price = product.variants.first.price | money_without_currency | replace: ",","" | remove_last: ".00" | times: 1 %}
+{% assign product_first_variant_compared_price = product.variants.first.compare_at_price | money_without_currency | replace: ",","" | remove_last: ".00" | times: 1 %}
+{% if product.compare_at_price > product.price %}
+  <div class="product_savings">
+    <span class="top-title-weight">
+      SAVE ₹{{ product_first_variant_compared_price | minus: product_first_variant_discounted_price }}
+    </span>
+  </div>
+{% endif %}
+    </div>
+
+    <div class="title_wrapper">
+      <h3 class="product_title desktop_product_title">{{ product.title | truncate: 23 }}</h3>
+      <h3 class="product_title mobile_product_title">{{ product.title | truncate: 16 }}</h3>
+    </div>
+
+    <!-- Start of Judge.me code --> 
+      <div class='jdgm-widget jdgm-preview-badge' data-id='{{ product.id }}'> 
+        {{ product.metafields.judgeme.badge }} 
+      </div> 
+    <!-- End of Judge.me code -->
+    </a>
+{% comment %}
+{% if product.options.size > 0 %}
+{% for option in product.options_with_values %}
+    {% assign option_name = option.name | downcase %}
+    {% if option_name == "size" %}
+      <div class="variant_swapper">
+        <div class="variant_select_wrapper {% if product.variants.size > 1 %}more_variants{% endif %}">
+          {% if product.variants.size > 1 %}
+            <div class="select_text">
+              Select
+            </div>
+          {% elsif product.has_only_default_variant %}
+            <div class="select_text">
+              Offers
+            </div>
+          {% elsif product.compare_at_price and product.compare_at_price > product.price %}
+            <div class="select_text variant-savings">
+              your saving
+            </div>
+          {% else %}
+            <div class="select_text offers_no_discount">
+              weight
+            </div>
+          {% endif %}
+            <div class="variant_swappable_wrapper">
+              {% if product.variants.size > 1 %}
+              <select id="variant_select" data-product-id="{{ product.id }}">
+                {% for variant in product.variants %}
+                  {% if variant.available %}
+                    <option value="{{ variant.title }}" data-variant-id="{{ variant.id }}" data-price="{{ variant.price | money_without_currency | replace: ",","" | remove_last: ".00" }}" data-compared-price="{% if variant.compare_at_price %}{{ variant.compare_at_price | money_without_currency | replace: ",","" | remove_last: ".00" }}{% else %}0{% endif %}">{{ variant.title }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              {% elsif product.compare_at_price > product.price %}
+                {% assign product_first_variant_discounted_price = product.price | money_without_currency | replace: ",","" | remove_last: ".00" | times: 1 %}
+                {% assign product_first_variant_compared_price = product.compare_at_price | money_without_currency | replace: ",","" | remove_last: ".00" | times: 1 %}
+                {% if product.compare_at_price > product.price %}
+                <p class="variant_price_saving">
+                  {{ product_first_variant_compared_price | minus: product_first_variant_discounted_price }}
+                </p>
+                {% endif %}
+              {% elsif product.has_only_default_variant %}
+                 <p class="visible_product_cart_discount">
+                  More offers are at
+                  <span class="card_offers_wrapper">
+                    cart
+                  </span>
+                  </p>
+              {% else %}
+                 <p class="card-product-default-weight">
+                   {{ product.variants.first.option1 }}
+                  </p>
+              {% endif %}
+            
+              
+            </div>
+          </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% endcomment %}
+
+<!-- default or no variant option -->
+
+  <div class="variant_swapper">
+  {% if product.variants.first.title %}
+    <div class="variant_swappable_wrapper">
+      <p class="card-product-default-weight">
+         {{ product.variants.first.option1 }}
+      </p>
+    </div>
+  {% endif %}
+  </div>
+
+<!-- default or no variant option -->
+
+    <div class="product_variant_prices_cart">
+      <div class="product_price_wrapper">
+        {% assign new_card_price = product.variants.first.price | money_without_currency | replace: ",","" | remove_last: ".00" %}
+        {% assign new_card_compared_price = product.variants.first.compare_at_price  | money_without_currency | replace: ",","" | remove_last: ".00" %}
+        {% assign new_card_price_length = new_card_price | size %}
+        {% assign new_card_compared_price_length = new_card_compared_price | size %}
+        <span class="{% if product.variants.first.price %}present_rupee{% endif %} {% if new_card_price_length <= 3 %}three_char_price{% endif %}">{{ new_card_price }}</span>
+       
+        <span class="card_compared_price {% if product.variants.first.compare_at_price %}present_rupee{% endif %} {% if new_card_price_length <= 3 %}three_compared_char_price{% endif %}">{{ new_card_compared_price }}</span>
+
+      </div>
+
+      <div class="add_to_cart_form">
+        {% if product.available %}
+        <!-- <product-form>
+          <form method="POST" action="/cart/add" class="product_form">
+            <input type="hidden" name="id" id="variant_form_id" value="{{ product.variants.first.id }}">
+            <input type="submit" value="Add">
+            <div class="loading__spinner hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" class="spinner" viewBox="0 0 66 66">
+                <circle stroke-width="6" cx="33" cy="33" r="30" fill="none" class="path"></circle>
+              </svg>
+            </div>
+          </form>
+        </product-form> -->
+        {% assign product_form_id = 'quick-add-' | append: section_id | append: product.id %}
+        {% assign card_product = product %}
+        <product-form data-section-id="{{ section.id }}">
+                {%- form 'product',
+                  card_product,
+                  id: product_form_id,
+                  class: 'form',
+                  novalidate: 'novalidate',
+                  data-type: 'add-to-cart-form'
+                -%}
+                  <input
+                    type="hidden"
+                    name="id"
+                    value="{{ product.selected_or_first_available_variant.id }}"
+                    class="product-variant-id"
+                    {% if product.selected_or_first_available_variant.available == false %}
+                      disabled
+                    {% endif %}
+                  >
+                  <button
+                    id="{{ product_form_id }}-submit"
+                    type="submit"
+                    name="add"
+                    class="quick-add__submit button button--full-width button--secondary{% if horizontal_quick_add %} card--horizontal__quick-add{% endif %}"
+                    aria-haspopup="dialog"
+                    aria-labelledby="{{ product_form_id }}-submit title-{{ section_id }}-{{ product.id }}"
+                    aria-live="polite"
+                    data-sold-out-message="true"
+                    {% if product.selected_or_first_available_variant.available == false %}
+                      disabled
+                    {% endif %}
+                  >
+                    <span>
+                      {%- if product.selected_or_first_available_variant.available -%}
+                        Add
+                      {%- else -%}
+                        Sold Out
+                      {%- endif -%}
+                    </span>
+                    <span class="sold-out-message hidden">
+                      {{ 'products.product.sold_out' | t }}
+                    </span>
+                    {%- if horizontal_quick_add -%}
+                      <span class="icon-wrap">
+                        {{- 'icon-plus.svg' | inline_asset_content -}}
+                      </span>
+                    {%- endif -%}
+                    {%- render 'loading-spinner' -%}
+                  </button>
+                {%- endform -%}
+              </product-form>
+        {% else %}
+          <p class="new_card_sold_out">Sold Out</p>
+        {% endif %}
+        <div class="inherited_loader">
+          {% render "customized-loader" %}
+        </div>
+      </div>
+    </div>
+
+
+
+<div class="product_recipe_link">
+  <p>See Recipes</p>
+</div>
+  
+</div>
+{% endif %}

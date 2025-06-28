@@ -1,0 +1,71 @@
+<div class="card-product-wrapper" id="{{ product.handle }}">
+  <a href="{{ product.url }}">
+    <div class="product_tag_save_wrapper">
+        
+      <div class="other_fav_products special_top_margin">
+        <div class="wishlist">
+          <div class='vt-wishlist-custom-plp' data-product-id='{{ product.id }}' data-product-handle='{{ product.handle }}' data-variant-id="{{ product.variant_id }}"></div>
+        </div>
+      </div>
+
+    </div>
+  
+    <div class="product_image_wrapper">
+        <img src="{{ product.image | image_url }}" class="product_image_2">
+    </div>
+
+    <div class="title_wrapper">
+      <h3 class="product_title">{{ product.title | truncate: 23 }}</h3>
+    </div>
+
+    <!-- Start of Judge.me code --> 
+      <div class='jdgm-widget jdgm-preview-badge' data-id='{{ product.id }}'> 
+        {{ product.metafields.judgeme.badge }} 
+      </div> 
+    <!-- End of Judge.me code -->
+    </a>
+
+
+<!-- default or no variant option -->
+{% if product.available %}
+  <div class="variant_swapper">
+      <div class="variant_select_wrapper">
+        {% for option in product.options_with_values %}
+        {% assign option_name = option.name | downcase %}
+        {% if option_name == "size" %}
+            <div class="select_text offers_no_discount">
+              {{ option_name }}
+            </div>
+        {% endif %}
+        {% endfor %}
+
+          {% if product.variants.first.title %}
+          <div class="variant_swappable_wrapper">
+            <p class="card-product-default-weight">
+               {{ product.variants.first.option1 }}
+            </p>
+          </div>
+          {% endif %}
+    
+        </div>
+    </div>
+{% endif %}
+<!-- default or no variant option -->
+
+    <div class="product_variant_prices_cart">
+      <div class="product_price_wrapper">
+        <span class="{% if product.variants.first.price %}present_rupee{% endif %}">{{ product.price | money_without_currency | replace: ",","" | remove_last: ".00" }}</span>
+      </div>
+
+      <div class="add_to_cart_form">
+        <form method="POST" action="/cart/add" class="product_form">
+          <input type="hidden" name="id" id="variant_form_id" value="{{ product.variant_id }}">
+          <input type="submit" value="Add">
+        </form>
+        <div class="inherited_loader">
+          {% render "customized-loader" %}
+        </div>
+      </div>
+    </div>
+  
+</div>

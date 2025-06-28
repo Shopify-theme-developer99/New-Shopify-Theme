@@ -1,0 +1,35 @@
+<div class="header_search_wrapper page-width">
+    <div class="search_field page-width">
+      <form action="/search" method="get" role="search">
+      <input type="search" name="q" placeholder="Search for healthy food & drinks" aria-label="Search" class="search_id">
+      <button type="submit" hidden>Search</button>
+      </form>
+    </div>
+    <div class="search_icon">
+      <img 
+        src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/Vector_3.png?v=1750761845">
+    </div>
+  
+</div>
+
+<script>
+  // window.addEventListener("DOMContentLoaded", function(){
+  //   let toggle_search = document.querySelector(".search_icon");
+  //   let search_overlay_wrapper = document.querySelector(".search_overlay_wrapper");
+  //   let body = document.querySelector("body");
+
+  //   toggle_search.addEventListener("click", function(){
+  //     let search_wrapper = document.querySelector(".customized_search_result");
+  //     search_wrapper.classList.toggle("hide_search");
+  //     search_overlay_wrapper.classList.toggle("hide_search");
+  //     body.classList.toggle("overflow-hidden");
+  //   })
+    
+  //   search_overlay_wrapper.addEventListener("click", function(){
+  //     toggle_search.click();
+  //   })
+    
+  // })
+</script>
+
+<script src="{{ 'searched_js.js' | asset_url }}"></script>

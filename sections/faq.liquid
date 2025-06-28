@@ -1,0 +1,176 @@
+{% style %}
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  .faq-container {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.faq-container h2 {
+  font-weight: bold;
+  font-size: 32px;
+  margin-bottom: 5px;
+  font-family: 'Gilroy-bold';
+}
+
+.faq {
+  margin-bottom: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-question {
+  width: 100%;
+  background-color: #ff87c0;
+  border: none;
+  font-family: 'Gilroy-semibold';
+  padding: 14px;
+  text-align: left;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.faq-question:hover {
+  background-color: #ff9bd0;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  background: var(--kiwi-white-color);
+  color: #333;
+  padding: 0 12px;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  font-size: 14px;
+  text-align: left;
+}
+
+.faq.open .faq-answer {
+  max-height: 600px;
+  padding: 12px;
+  font-family: 'Gilroy-medium';
+}
+
+.faq-container span.arrow {
+    width: 20px;
+    transition: transform 0.3s ease;
+}
+
+.faq.open .arrow {
+  transform: rotate(180deg);
+}
+
+@media screen and (max-width: 768px) {
+
+  .faq-container h2 {
+    margin-bottom: 10px;
+  }
+  .faq-question {
+    font-size: 18px;
+  }
+
+  .faq-container span.arrow {
+    width: 15px;
+  }
+
+  .faq-answer {
+    font-size: 24px;
+    font-size: 16px;
+  }
+}
+
+{% endstyle %}
+
+{% if product.metafields.custom.new_theme_faq.size > 1 %}
+<div class="faq-container page-width" id="{{ section.id }}">
+  {% if section.settings.title %}
+  <h2>{{ section.settings.title }}</h2>
+  {% endif %}
+  
+{% assign raw_faqs = product.metafields.custom.new_theme_faq | strip %}
+{% assign stripped_faqs = raw_faqs | remove: '["' | remove: '"]' %}
+{% assign product_faqs = stripped_faqs | split: '","' %}
+
+{% assign faq_count = product_faqs.size %}
+{% for i in (0..faq_count) %}
+  {% assign is_even = i | modulo: 2 %}
+  {% assign next_index = i | plus: 1 %}
+  {% if is_even == 0 and next_index < faq_count %}
+    <div class="faq">
+      <button class="faq-question">
+        {{ product_faqs[i] }}
+        <span class="arrow">
+          <img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/Shopicons_Bold_Arrowdropdown.png?v=1749282221">
+        </span>
+      </button>
+      <div class="faq-answer">
+        {{ product_faqs[next_index] }}
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
+
+</div>
+{% endif %}
+<script>
+document.querySelectorAll('.faq-question').forEach(button => {
+  button.addEventListener('click', () => {
+    const faq = button.parentElement;
+
+    // Close any open FAQ
+    document.querySelectorAll('.faq').forEach(item => {
+      if (item !== faq) item.classList.remove('open');
+    });
+
+    // Toggle current one
+    faq.classList.toggle('open');
+  });
+});
+
+</script>
+
+{% schema %}
+  {
+    "name": "FAQ",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Padding top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Padding bottom",
+        "default": 36
+      }
+    ],
+    "presets": [{
+      "name": "FAQ"
+    }]
+  }
+{% endschema %}

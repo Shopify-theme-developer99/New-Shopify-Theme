@@ -1,0 +1,92 @@
+<style>
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+</style>
+
+{% if section.blocks.size %}
+<div class="auto_slider page-width" id="{{ section.id }}">
+  {% if section.settings.title %}
+  <h2 class="heading_title">{{ section.settings.title }}</h2>
+  {% endif %}
+
+  <div class="parent_auto_slider_container">
+    <div class="auto_slider_wrapper">
+     {% for block in section.blocks %}
+      {% if block.settings.image %}
+      <div class="auto_image_slides">
+        {% if block.settings.image_url %}
+        <a href="{{ block.settings.image_url }}">
+        {% endif %}
+            
+         {% if block.settings.image %}
+            {{ block.settings.image | image_url: width: 800 | image_tag }}
+         {% endif %}
+    
+            
+        {% if block.settings.image_url %}
+        </a>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+ 
+</div>
+{%endif %}
+
+
+{% schema %}
+  {
+    "name": "Icon Slider",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "max": 60,
+        "min": 0,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 5
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "max": 60,
+        "min": 0,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 5
+      },
+    ],
+    "blocks": [{
+      "name": "Image",
+      "type": "image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "image_url",
+          "label": "URL"
+        }
+      ]
+    }],
+    "presets": [{
+      "name": "Icon Slider"
+    }]
+  }
+{% endschema %}

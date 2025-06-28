@@ -1,0 +1,70 @@
+<div class="variant_weightage_wrapper">
+  {% for variant in product.variants %}
+    {% liquid
+      assign variant_id = variant.id
+      assign variant_weight = variant.metafields.custom.actual_product_weight
+      assign variant_grammage = variant.metafields.custom.volume_weight_unit | replace: '["','' | replace: '"]','' | strip
+      assign variant_price_string = variant.price | money_without_trailing_zeros | replace: '₹ ','' | replace: ',', ''
+      assign variant_price = variant_price_string
+    %}
+
+    <div class="product_weight_per_unit_price"
+      data-variant-id="{{ variant_id }}"
+      data-variant-weight="{{ variant_weight }}"
+      data-variant-weight-grammage="{{ variant_grammage }}"
+      data-variant-price="{{ variant_price }}"
+    >
+      
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+
+window.addEventListener("DOMContentLoaded", function(){
+
+let variant_weightage_wrapper = document.querySelectorAll('.variant_weightage_wrapper > div');
+
+  variant_weightage_wrapper.forEach((variant, index) => {
+    if (variant.getAttribute("data-variant-weight")){
+      let id = parseInt(variant.getAttribute("data-variant-id"));
+      let weightage = parseFloat(variant.getAttribute("data-variant-weight"));
+      let grammage = variant.getAttribute("data-variant-weight-grammage");
+      let variant_price = parseFloat(variant.getAttribute("data-variant-price"));
+      let price_per_unit = '';
+  
+      if (grammage === 'KG' || grammage === 'L') {
+          // price per unit of 1 KG or 1 L
+          let per_unit_price = (variant_price / (weightage*1000))*100;
+          if(grammage === 'KG'){
+            price_per_unit = `₹${per_unit_price.toFixed(2)} / 100gm`;
+          }else {
+            price_per_unit = `₹${per_unit_price.toFixed(2)} / 100ml`;
+          }
+      } else if (weightage < 100) {
+          // price per 1 gm or ml
+          let per_unit_price = variant_price / weightage;
+          price_per_unit = `₹${per_unit_price.toFixed(2)} / 1${grammage}`;
+      } else {
+          // price per 100 gm or ml
+          let per_unit_price = (variant_price / weightage) * 100;
+          price_per_unit = `₹${per_unit_price.toFixed(2)} / 100${grammage}`;
+      }
+  
+      variant.innerHTML = `(${price_per_unit})`;
+      console.log(price_per_unit);
+  
+      if(index == 0){
+        variant.style.display = "block";
+      }else {
+        variant.style.display = "none";
+      }
+    }
+      
+      
+  });
+
+})
+
+
+</script>

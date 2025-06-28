@@ -1,0 +1,96 @@
+<style>
+  .franchise_shop_buttons {
+    width: 50%;
+    position: relative;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.franchise_shop_buttons > * {
+    background: var(--kiwi-green-color);
+    text-align: center;
+    font-family: 'Gilroy-medium';
+    padding: 10px;
+    color: var(--kiwi-white-color);
+    border-radius: 7px;
+}
+
+a.chat_whatsapp {
+    width: 50%;
+    display: block;
+    background: var(--kiwi-green-color);
+    text-align: center;
+    font-family: 'Gilroy-medium';
+    padding: 10px;
+    color: var(--kiwi-white-color);
+    border-radius: 7px;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 12px;
+}
+
+@media screen and (max-width: 768px) {
+  main#MainContent .page-width.franchise_buttons_wrapper {
+    padding-bottom: 20px;
+    background: var(--kiwi-blue-color);
+  }
+  .franchise_shop_buttons {
+      width: 85%;
+  }
+
+  a.chat_whatsapp {
+    width: 85%;
+  }
+}  
+</style>
+
+<div class="page-width franchise_buttons_wrapper">
+  <div class="franchise_shop_buttons">
+    <a href="{{ section.settings.button_url_1 }}" class="half_width">{{ section.settings.button_text_1 }}</a>
+    <a href="{{ section.settings.button_url_2 }}" class="half_width">{{ section.settings.button_text_2 }}</a>
+  </div>
+  <a href="{{ section.settings.button_url_3 }}" class="chat_whatsapp">{{ section.settings.button_text_3 }}</a>
+</div>
+
+{% schema %}
+  {
+    "name": "Franchise Buttons",
+    "settings": [
+      {
+        "type": "text",
+        "id": "button_text_1",
+        "label": "Button text 1"
+      },
+      {
+        "type": "url",
+        "id": "button_url_1",
+        "label": "Button URL 1"
+      },
+      {
+        "type": "text",
+        "id": "button_text_2",
+        "label": "Button text 2"
+      },
+      {
+        "type": "url",
+        "id": "button_url_2",
+        "label": "Button URL 2"
+      },
+      {
+        "type": "text",
+        "id": "button_text_3",
+        "label": "Button text 3"
+      },
+      {
+        "type": "url",
+        "id": "button_url_3",
+        "label": "Button URL 3"
+      },
+    ],
+    "presets": [{
+      "name": "Franchise Buttons"
+    }]
+  }
+{% endschema %}

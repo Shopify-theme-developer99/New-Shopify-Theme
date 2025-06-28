@@ -1,0 +1,77 @@
+{% style %}
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding-top }}px;
+    padding-bottom: {{ section.settings.padding-bottom }}px;
+  }
+  .customized_banner img {
+    width: 100%;
+    display: block;
+  }
+{% endstyle %}
+
+<div class="customized_banner {% if section.settings.full_width %}page-width{% endif %}" id="{{ section.id }}">
+  {% if section.settings.desktop_image %}
+  {% if section.settings.image_url %}
+  <a href="{{ section.settings.image_url }}">
+  {% endif %}
+  <picture>
+    <source media="(max-width:750px)" srcset="{{ section.settings.mobile_image | image_url }}">
+    <img src="{{ section.settings.desktop_image | image_url }}" alt="{{ section.settings.desktop_image | image_url }}">
+  </picture>
+  {% if section.settings.image_url %}
+  </a>
+  {% endif %}
+  {% endif %}
+</div>
+
+{% schema %}
+  {
+    "name": "customized banner",
+    "settings": [
+      {
+        "type": "range",
+        "id": "padding-top",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "padding-bottom",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 16
+      },
+      {
+        "type": "image_picker",
+        "id": "desktop_image",
+        "label": "Desktop Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "mobile_image",
+        "label": "Mobile Image"
+      },
+      {
+        "type": "url",
+        "id": "image_url",
+        "label": "URL"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Full Width",
+        "default": true
+      }
+    ],
+    "presets": [{
+      "name": "customized banner"
+    }]
+  }
+{% endschema %}

@@ -1,0 +1,24 @@
+{% assign raw_icon = product.metafields.custom.new_theme_product_icons_with_text | strip %}
+{% assign stripped_icon = raw_icon | remove: '["' | remove: '"]' %}
+{% assign product_icon = stripped_icon | split: '","' %}
+
+<div class="features {% if product_icon.size < 1 %}none{% endif %}">
+
+
+{% assign icon_count = product_icon.size %}
+{% for i in (0..icon_count) %}
+  {% assign is_even = i | modulo: 2 %}
+  {% assign next_index = i | plus: 1 %}
+  {% if is_even == 0 and next_index < icon_count %}
+    <div class="feature-box">
+      <div class="feature-icon">
+        <img src="{{ product_icon[i] }}">
+      </div>
+      <div class="feature-text">
+        {{ product_icon[next_index] }}
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
+  
+</div>

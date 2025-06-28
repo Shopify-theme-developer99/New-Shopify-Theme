@@ -1,0 +1,258 @@
+<style>
+  .loader {
+    width: 35px;
+    height: 35px;
+    border: 6px solid transparent;
+    border-top: 6px solid #64ac28;
+    border-radius: 50%;
+    position: absolute;
+    top: 10%;
+    right: 35%;
+    animation: spin 1s linear infinite, glow 1.5s ease-in-out infinite alternate;
+    display:none;
+}
+
+h3#result {
+    color: #68b32a;
+    font-size: 16px;
+    margin: 0 0 8px 0;
+    font-weight: 500;
+    position: relative;
+    top: 0;
+    line-height: 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 10px #64ac28; }
+    100% { box-shadow: 0 0 30px #64ac28; }
+}
+
+.edd_wrapper {
+    padding: 0.5rem 0 0.4rem 0;
+}
+
+
+.edd_wrapper input#pincode,
+.delivery-date-estimation h2 {
+  width: 60%;
+}
+
+.edd_wrapper input#pincode::placeholder {
+  font-family: 'Gilroy-medium';
+}
+  
+.edd_wrapper h2 {
+    font-size: 12px;
+    line-height: normal;
+    margin-bottom: 0;
+    width: fit-content;
+}
+
+.delivery-date-estimation {
+    display: flex;
+    align-items: center;
+}
+
+.delivery-date-estimation img {
+  width: 20%;
+  margin-left: -18px;
+  margin-bottom: 4px;
+}
+
+span.free-shipping-tag {
+    margin-bottom: 0;
+    height: 30px;
+}
+  
+.edd_wrapper input#pincode {
+    border-radius: 6px;
+    padding: 1rem;
+    width: 65%;
+    font-size: 14px;
+    outline: 2px solid var(--kiwi--dark-green-color);
+    transition: all 0.3s linear;
+    border: 0;
+}
+
+.edd_wrapper input#pincode:focus-visible {
+    border: 0;
+    outline: 2px solid #68b32a;
+    outline-offset: 0;
+    box-shadow: none;
+}
+
+.edd_wrapper .check_button {
+    width: 22%;
+    margin-left: 5px;
+    display: inline-block;
+    position: relative;
+}
+
+.edd_wrapper button#edd_get_button {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    padding: 1.1rem;
+    border-radius: 6px;
+    color: #fff;
+    background-color: var(--kiwi--dark-green-color);
+    font-size: 14px;
+    transition: all 0.3s linear;
+    width: 75%;
+    border: 0;
+    font-family: 'Gilroy-bold';
+    width: 100%;
+    line-height: 100%;
+}
+
+.edd_wrapper button#edd_get_button:hover {
+    background-color: purple;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+@media screen and (max-width:768px){
+
+  .edd_wrapper h2 {
+    font-size: 11px;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  
+  .edd_wrapper {
+    padding: 0rem 0 0.7rem 0;
+  }
+  
+  h3#result {
+    font-size: 14px;
+  }
+
+  .edd_wrapper input#pincode {
+    padding: 0.4rem;
+    padding-left: 0.8rem;
+  }
+
+  .edd_wrapper button#edd_get_button {
+    padding: 1.2rem;
+  }
+
+  span.free-shipping-tag {
+    margin-bottom: 7px;
+    width: 28%;
+    height: 20px;
+    display: block;
+  }
+
+  span.free-shipping-tag > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .delivery-date-estimation h2 {
+    width: 60%;
+  }
+
+  .edd_wrapper input#pincode {
+    width: 72%;
+    padding: 0.9rem;
+  }
+
+  .edd_wrapper .check_button {
+  width: 25%;
+  }
+
+  img.product_block_banner_image {
+    margin: 5px 0;
+  }
+}
+  
+</style>
+
+<div class="edd_wrapper">
+  <div class="delivery-date-estimation">
+    <h2>DELIVERY ESTIMATE</h2>
+    {% comment %}
+    {% render "free-shipping-icon" %}
+    {% endcomment %}
+
+    <img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/free_pink.png?v=1749117959">
+  </div>
+  <input type="number" id="pincode" placeholder="Enter pincode">
+  <div class="check_button">
+    <button onclick="getEstimatedDelivery()" id="edd_get_button">Check</button>
+    <div class="loader"></div>
+  </div>
+</div>
+
+<h3 id="result"></h3>
+
+
+ <script>
+  async function getEstimatedDelivery() {
+          let date_loader_btn = document.querySelector(".loader");
+          date_loader_btn.style.display = "block"
+          
+            const userPincode = document.getElementById("pincode").value;
+            const pickupPincode = 560026;  // Your warehouse/seller's pickup pincode
+            
+            if (!userPincode) {
+                document.getElementById("result").innerText = "Please enter a valid pincode.";
+                makeloadernone()
+                return;
+            }
+
+            const url = `https://app.shipway.com/api/PredictedEdd?destination_pincode=${userPincode}&pickup_pincode=${pickupPincode}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Basic c3VwcGx5Y2hhaW5Aa2lzYW53aW5kb3cuY29tOjB3TXo4NTQ5Z3llVGgxalA2NzUxYThNNjVHM3Q5OTZV"
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success === "success" && data.response) {
+                    const eddDaysList = Object.values(data.response).map(item => item.edd_days);
+                    
+                    if (eddDaysList.length > 0) {
+                        const minDays = Math.min(...eddDaysList);
+                        const maxDays = Math.max(...eddDaysList);
+                        document.getElementById("result").innerText = 
+                            `Estimated delivery within: ${minDays} - ${maxDays} days`;
+                      makeloadernone()
+                    } else {
+                        document.getElementById("result").innerText = "Delivery info not available.";
+                      makeloadernone()
+                    }
+                } else {
+                    document.getElementById("result").innerText = "Error fetching delivery details.";
+                  makeloadernone()
+                }
+            } catch (error) {
+                document.getElementById("result").innerText = "Failed to fetch exact delivery date.";
+                console.error("Error:", error);
+                makeloadernone()
+            }
+        }
+
+   function makeloadernone(){
+     let date_loader_btn = document.querySelector(".loader");
+     date_loader_btn.style.display = "none";
+   }
+    </script>

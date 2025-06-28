@@ -1,0 +1,143 @@
+<style>
+  .page-width.buld_order_wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .page-width.buld_order_wrapper .support-section {
+      padding-top: 0;
+  }
+  span.icon.whatsapp_contact {
+    max-width: 4% ;
+  }
+  .whatsapp-label {
+    margin: 30px 0 5px;
+  }
+  .bulk_order_app {
+    background: #F0F4F3;
+    padding: 20px;
+    border-radius: 7px;
+  }
+  .bulk_order_app input {
+    border-radius: 20px;
+  }
+  div._formFieldContainer_1ydxd_5, ._selectContainer_1yit2_6 {
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  button._formSubmitButton_ed7ce_82 {
+    width: fit-content;
+    position: relative;
+    margin: 0 auto;
+    padding: 10px 20px;
+    font-family: 'Gilroy-medium';
+    font-size: 14px;
+  }
+  h2._textHeading_2aowh_35 {
+       font-family: 'Gilroy-medium';
+  }
+  .whatsapp-chat {
+    padding-bottom: 10px;
+  }
+
+  @media screen and (min-width: 768px) {
+    .support-section .question-header {
+      font-size: 20px;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .page-width.buld_order_wrapper {
+      grid-template-columns: 1fr;
+      padding: 0;
+    }
+
+    .bulk_order_app {
+      padding: 20px 0;
+    }
+
+    .page-width.buld_order_wrapper .support-section {
+      padding: 0 20px;
+    }
+
+    .whatsapp-chat {
+    padding-top: 0 !important;
+    }
+
+    span.icon.whatsapp_contact {
+    max-width: 12%;
+    }
+
+   
+  }
+</style>
+
+<div class="page-width buld_order_wrapper">
+  <div class="bulk_order_app">
+    {% for block in section.blocks %}
+      {% render block %}
+    {% endfor %}
+  </div>
+  <div class="support-section">
+    <div class="question-header">Got any Question?</div>
+  
+    <div class="customer-care">
+      <div class="section-title">Customer Care:</div>
+      <div class="contact-item">
+        <a href="/">
+        <span class="icon"><img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/call.png?v=1748859312"></span>
+        <span class="phone-number">+91 9xxxxxxxx</span>
+        </a>
+      </div>
+      <div class="contact-item">
+        <a href="mailto:customer@kiwikisan.in">
+        <span class="icon"><img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/Icon_Frame.png?v=1748859312"></span>
+        <span class="email-link">customercare@kiwikisan.in</span>
+        </a>
+      </div>
+      <div class="contact-item">
+        <a href="/">
+        <span class="icon"><img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/location.png?v=1748859312"></span>
+        <span class="location-link">Location</span>
+        </a>
+      </div>
+      <div class="working-hours">Working Hours: 10AM - 7AM IST Monday to Saturday</div>
+    </div>
+  
+    <div class="get-in-touch">
+      <div class="section-title">Get in touch</div>
+      <div class="contact-line">
+        For collaboration and business related queries:
+        <a href="mailto:business@kiwikisan.in" class="email-link">business@kiwikisan.in</a>
+      </div>
+      <div class="contact-line">
+        For any other queries:
+        <a href="mailto:support@kiwikisan.in" class="email-link">customersupport@kiwikisan.in</a>
+      </div>
+    </div>
+  
+   
+  </div>
+</div>
+ <div class="whatsapp-chat">
+  <div class="whatsapp-label">
+    <span class="icon whatsapp_contact"><img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/whatsapp_image_contact.png?v=1748847605"></span>
+    <span>KIWI Kisan Window <img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/right_icon_conatct.png?v=1748847604" class="right_icon"></span>
+  </div>
+  <a href="" class="chat-button">Continue to Chat</a>
+  </div>
+{% schema %}
+  {
+    "name": "Form Section",
+    "settings": [
+    ],
+    "blocks": [
+      {
+        "type": "@app"
+      }
+    ],
+    "presets": [{
+      "name": "Form Section"
+    }]
+  }
+{% endschema %}

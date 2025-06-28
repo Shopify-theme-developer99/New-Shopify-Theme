@@ -1,0 +1,58 @@
+{% style %}
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{% endstyle %}
+
+<div class="featured_collection home_recently_viewed" id="{{ section.id }}">
+  {% if section.settings.title %}
+  <h2 class="page-width">{{ section.settings.title }}</h2>
+  {% endif %}
+
+  <div class="featured_collection_wrapper product-list-wrapper" id="recently_viewed_products">
+    
+  </div>
+  
+</div>
+
+
+<script src="{{ 'new-card-product.js' | asset_url }}" async></script>
+
+{% schema %}
+  {
+    "name": "Customer Categories",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 16
+      },
+    ],
+    "presets": [
+      {
+        "name": "Customer Categories"
+      }
+    ]
+  }
+{% endschema %}

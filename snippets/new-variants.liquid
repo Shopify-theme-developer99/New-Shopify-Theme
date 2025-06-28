@@ -1,0 +1,9 @@
+{% if product.variants.size > 0 %}
+  | <span>
+    {% assign words = product.variants.first.title | split: " " %}
+  {% for word in words %}
+    {{ word | downcase }}
+  {% endfor %}
+  </span>
+
+{% endif %}

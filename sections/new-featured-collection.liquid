@@ -1,0 +1,168 @@
+
+
+<script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+
+{% style %}
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | default: 20 }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{% endstyle %}
+
+<div class="featured_collection" id="{{ section.id }}">
+  {% if section.settings.title %}
+  <h2 class="page-width">{{ section.settings.title }}</h2>
+  {% endif %}
+
+  {% if section.settings.tab_title_1 != blank %}
+  <div class="page-width tabs_container">
+  <div class="tab_wrapper page-width {% if section.settings.tab_title_3 != blank %}thirdtab{% endif %}">
+     {% for i in (1..3) %}
+      {% assign tab_title_key = 'tab_title_' | append: i %}
+      {% assign tab_id_key = 'tab_id_' | append: i %}
+      {% assign tab_title = section.settings[tab_title_key] %}
+      {% assign tab_id = section.settings[tab_id_key] %}
+    
+      {% if tab_title != blank %}
+        <div class="tab {% if forloop.index == 1 %}active{% endif %} {% if forloop.index == 2 and section.settings.tab_title_3 != blank %}second_tab_border{% endif %}" id="{{ tab_id }}">
+          <button>{{ tab_title }}</button>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  </div>
+  {% endif %}
+
+  <div class="featured_collection_wrapper">
+    {% for block in section.blocks %}
+    <div class="product-list-wrapper {% if forloop.index == 1 %}show_featured_collection{% else %}animated_remove_collection{% endif %}" id="{{ block.settings.tab_id }}" data-collection="tab-{{ block.settings.collection.title }}">
+      {% assign collection = block.settings.collection %}
+
+      {% for product in collection.products %}
+        {% render 'new-card-product', product: product %}
+      {% endfor %}
+      
+    </div>
+    {% endfor %}
+  </div>
+  
+</div>
+
+<script>
+  window.addEventListener("DOMContentLoaded", function(){
+    let featured_collection_tabs = document.querySelectorAll("#{{ section.id }}.featured_collection .tab_wrapper .tab");
+    let featured_collections = document.querySelectorAll("#{{ section.id }}.featured_collection .featured_collection_wrapper .product-list-wrapper");
+
+    featured_collection_tabs.forEach(tab => {
+        tab.addEventListener("click", function(){
+            let tab_id = this.id.trim();
+            
+            featured_collections.forEach(collection => {
+                if (collection.id.trim() === tab_id) {
+                    tab.classList.add("active");
+                    collection.classList.add("show_featured_collection");
+                    collection.classList.remove("animated_remove_collection");
+                } else {
+                    tab.classList.remove("active");
+                    collection.classList.remove("show_featured_collection");
+                    collection.classList.add("animated_remove_collection");
+                }
+            });
+
+            // Optional: Handle tab active state
+            featured_collection_tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+        });
+      });
+  });
+
+</script>
+
+<script src="{{ 'new-card-product.js' | asset_url }}" async></script>
+
+{% schema %}
+  {
+    "name": "Featured Collection",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "tab_title_1",
+        "label": "Tab Title"
+      },
+      {
+        "type": "text",
+        "id": "tab_id_1",
+        "label": "Tab Id 1"
+      },
+      {
+        "type": "text",
+        "id": "tab_title_2",
+        "label": "Tab Title 2"
+      },
+      {
+        "type": "text",
+        "id": "tab_id_2",
+        "label": "Tab Id 2"
+      },
+      {
+        "type": "text",
+        "id": "tab_title_3",
+        "label": "Tab Title 3"
+      },
+      {
+        "type": "text",
+        "id": "tab_id_3",
+        "label": "Tab Id 3"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 16
+      },
+    ],
+    "blocks": [{
+      "name": "Featured Collection",
+      "type": "featured_collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Featured Collection"
+        },
+        {
+          "type": "text",
+          "id": "tab_id",
+          "label": "ID"
+        },
+      ]
+    }],
+    "presets": [
+      {
+        "name": "Featured Collection"
+      }
+    ]
+  }
+{% endschema %}

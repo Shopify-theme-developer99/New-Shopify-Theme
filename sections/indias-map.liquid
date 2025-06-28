@@ -1,0 +1,199 @@
+<style>
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+   .land {
+      fill: #fff;
+      stroke: #333;
+      stroke-width: 1;
+      cursor: pointer;
+   }
+  
+   .land.selected {
+    fill: var(--kiwi-pink-color);
+   }
+
+  .cursor_map_pointer {
+    position: absolute;
+    top: 40%;
+    left: 33%;
+    width: 6%;
+    animation: top_bottom 2s linear infinite;
+  }
+
+  @keyframes top_bottom {
+    0% {
+      transform: translate(80%, 50%);
+    }
+    50% {
+      transform: translate(0, 0%);
+    }
+    100% {
+      transform: translate(80%, 50%);
+    }
+  }
+</style>
+
+<div class="india_map_main_container page-width" id="{{ section.id }}">
+  {% if section.settings.title %}
+  <h2>{{ section.settings.title }}</h2>
+  {% endif %}
+
+  <div class="india_map_wrapper">
+    <div class="border_wrapper">
+      {% render "india-map" %}
+      <h4 class="regional_state"></h4>
+      <div class="cursor_map_pointer">
+        <img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/click_1.png?v=1750407449">
+      </div>
+    </div>
+    <div class="regional_product">
+
+      <div class="without_search_Wrapper">
+        <h3>get as per the state</h3>
+        <img src="https://kiwikisanwindow.com/cdn/shop/files/Rectangle_148.png?v=1747051742" >
+      </div>
+      
+    </div>
+    <div class="regional_coming_soon_product_wrapper">
+      <div class="coming_soon_text">
+        <p>Coming Soon</p>
+      </div>
+      <div class="coming_soon_img">
+        <img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/4500_9_07-removebg-preview.png?v=1747660264">
+        <a href="/collections/all">See Some Other Products</a>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+
+
+
+document.querySelectorAll('.land').forEach(el => {
+  el.addEventListener('click', (e) => {
+  // Remove "selected" class from all elements first
+    document.querySelectorAll('.land').forEach(path => path.classList.remove("selected"));
+    let cursor_pointer = document.querySelector(".cursor_map_pointer");
+    if(cursor_pointer) cursor_pointer.style.display = "none";
+
+    // Then add "selected" to the clicked one
+    let selected_state_html = e.currentTarget;
+    selected_state_html.classList.add("selected");
+    
+    let selected_state_name = selected_state_html.getAttribute("title");
+    
+    let regional_state = document.querySelector(".regional_state");
+    if(regional_state) regional_state.innerHTML = selected_state_name;
+    
+    let modified_selected_state = selected_state_name.replace(/\s+/g, "-").toLowerCase();
+
+    reginal_collection(modified_selected_state)
+    let regional_product = document.querySelector(".regional_product");
+    regional_product.innerHTML = "<span class='custom_loader'>&nbsp;</span>"
+
+  });
+
+});
+
+function reginal_collection(state_title) {
+
+fetch(`collections/${state_title}`)
+  .then((response) => response.text())
+  .then((data) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data, "text/html")
+    
+    let main_product_grid = doc.querySelectorAll("ul#product-grid > li.grid__item");
+    let regional_product = document.querySelector(".regional_product");
+
+    regional_product.innerHTML = "";
+    regional_product.classList.add("regional_product_grid");
+    if(main_product_grid.length > 0) {
+      main_product_grid.forEach(product => {
+        regional_product.append(product);
+        document.querySelectorAll(".india_map_wrapper li.grid__item").forEach(item => {
+          if (item.textContent.trim() === "" && item.children.length === 0) {
+            item.style.display = "none";
+          }
+        });
+      })
+      let regional_coming_soon_wrapper = document.querySelector(".regional_coming_soon_product_wrapper");
+      if(regional_coming_soon_wrapper) regional_coming_soon_wrapper.style.display = "none";
+
+      if(main_product_grid.length <= 4) {
+        document.getElementById("{{ section.id }}").scrollIntoView({
+          behavior: "smooth"
+        })
+        
+      }
+    }
+     else {
+      let regional_coming_soon_wrapper = document.querySelector(".regional_coming_soon_product_wrapper");
+      if(regional_coming_soon_wrapper) regional_coming_soon_wrapper.style.display = "block";
+
+       
+      if(window.innerWidth > 1097) {
+       if(main_product_grid.length <= 4) {
+        document.getElementById("{{ section.id }}").scrollIntoView({
+          behavior: "smooth"
+       })
+      }else {
+        ;
+      }
+       
+    }
+     }
+    
+    
+  })
+  .catch(error => console.error("Error fetching state collection:", error));
+}
+
+  
+
+
+
+
+</script>
+
+
+
+{% schema %}
+  {
+    "name": "India Map",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "max": 60,
+        "min": 0,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 5
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "max": 60,
+        "min": 0,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 5
+      },
+    ],
+    "presets": [{
+      "name": "India Map",
+    }]
+  }
+{% endschema %}

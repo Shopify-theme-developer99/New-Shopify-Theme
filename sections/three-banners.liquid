@@ -1,0 +1,66 @@
+<style>
+  #{{ section.id }} {
+    padding: {{ section.settings.desktop_padding }};
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  @media screen and (max-width:768px) {
+    #{{ section.id }} {
+      padding: {{ section.settings.mobile_padding }};
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+  }
+</style>
+
+<div class="product_banner_wrapper page-width" id="{{ section.id }}">
+  {% assign product_image_size = product.images.size %}
+
+  {% for block in section.blocks %}
+    {% if forloop.index == 1 %}
+      {% assign last_index = product_image_size | minus: 1 %}
+      {% assign image = block.settings.image | default: product.images[last_index] %}
+    {% else %}
+      {% assign image = block.settings.image %}
+    {% endif %}
+
+    {% if image %}
+      <img src="{{ image | image_url: width: 800 }}" alt="Banner {{ forloop.index }}">
+    {% endif %}
+  {% endfor %}
+</div>
+
+
+{% schema %}
+  {
+    "name": "Three Banner",
+    "settings": [
+      {
+        "type": "text",
+        "id": "desktop_padding",
+        "label": "Desktop Padding"
+      },
+      {
+        "type": "text",
+        "id": "mobile_padding",
+        "label": "Mobile Padding"
+      }
+    ],
+    "blocks": [{
+      "type": "banner",
+      "name": "Bannner",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }],
+    "presets": [{
+      "name": "Three Banner"
+    }]
+  }
+{% endschema %}

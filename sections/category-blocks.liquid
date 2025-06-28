@@ -1,0 +1,92 @@
+{% style %}
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding-top }}px;
+    padding-bottom: {{ section.settings.padding-bottom }}px;
+  }
+{% endstyle %}
+
+<div class="category_wrapper page-width" id="{{ section.id }}">
+  {% for block in section.blocks %}
+    <div class="category_blocks" id="top_category_block_{{ forloop.index }}">
+      {% if block.settings.url %}
+      <a href="{{ block.settings.url }}">
+      {% endif %}
+      {% if block.settings.image %}
+      <div class="category_image">
+        <picture>
+          <source media="(max-width:768px)" srcset="{{ block.settings.image_mobile | image_url }}">
+          <img src="{{ block.settings.image | image_url }}" alt="{{ block.settings.image | image_url }}">
+        </picture>
+      </div>
+      {% endif %}
+      {% if block.settings.title %}
+      <div class="category_title">
+        <h3>{{ block.settings.title }}</h3>
+      </div>
+      {% endif %}
+      {% if block.settings.url %}
+      </a>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% schema %}
+  {
+    "name": "Category Blocks",
+    "settings": [
+      {
+        "type": "range",
+        "id": "padding-top",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "padding-bottom",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 16
+      },
+    ],
+    "blocks": [{
+      "type": "category_block",
+      "name": "Category Block",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "URL"
+        },
+      ]
+    }],
+    "presets": [
+      {
+        "name": "Category Blocks"
+      }
+    ]
+  }
+{% endschema %}

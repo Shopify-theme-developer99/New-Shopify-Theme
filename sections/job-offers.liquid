@@ -1,0 +1,221 @@
+<style>
+  #{{ section.id }} {
+    padding: {{ section.settings.desktop_padding }};
+  }
+
+  .job_offers_wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .job-card {
+    max-width: 400px;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: white;
+    font-family: Arial, sans-serif;
+  }
+  
+  .job-position {
+    color: grey;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  
+  .job-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: #000;
+    text-decoration: underline;
+  }
+  
+  .job-summary {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  
+  .job-buttons {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    border-radius: 9999px;
+    font-size: 16px;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    transition: 0.3s ease;
+  }
+  
+  .btn-outline {
+    border: 2px solid #0e5e3b;
+    color: #0e5e3b;
+    background: transparent;
+    line-height: 28px;
+    font-size: 16px;
+    font-family: 'Gilroy-medium';
+  }
+  
+  .btn-outline:hover {
+    background: #0e5e3b;
+    color: white;
+  }
+  
+  .btn-filled {
+    background: #0e5e3b;
+    color: white;
+    border: none;
+    font-family: 'Gilroy-medium';
+  }
+  
+  .btn-filled:hover {
+    background: #094528;
+  }
+
+  .job_details {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -15%);
+    width: 65%;
+    background: var(--kiwi-white-color);
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    padding: 15px;
+    border-radius: 7px;
+    height: 50vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: none;
+  }
+  
+  span.cross_icon {
+      width: 20px;
+      display: block;
+      position: relative;
+      margin: 0 0 0 auto;
+  }
+
+  @media screen and (max-width: 768px) {
+    #{{ section.id }} {
+      padding: {{ section.settings.mobile_padding }};
+    }
+
+    .btn {
+      padding: 8px 20px;
+    }
+
+    .job_offers_wrapper {
+        grid-template-columns: repeat(1, 1fr);
+        gap: 20px;
+    }
+
+    .job_details {
+      width: 90%;
+    }
+
+    .btn-outline {
+      line-height: 25px;
+    }
+  }
+
+</style>
+
+<div class="job_offers_wrapper page-width" id="{{ section.id }}">
+  {% for block in section.blocks %}
+  <div class="job-card">
+    <p class="job-position">Position</p>
+    <h2 class="job-title">{{ block.settings.job_title }}</h2>
+    {% if block.settings.job_summary %}
+    <p class="job-summary"><strong>Summary: </strong>{{ block.settings.job_summary }}</p>
+    {% endif %}
+    <div class="job-buttons">
+      <a href="#" class="btn btn-outline read_more">Read More</a>
+      <a href="#" class="btn btn-filled apply_now">Apply Now</a>
+    </div>
+    <div class="job_details">
+    <span class="cross_icon"><img src="https://cdn.shopify.com/s/files/1/0774/8612/9427/files/remove.png?v=1750147094"></span>
+    <div class="actual_job_details">
+      {{ block.settings.job_summary_details }}
+    </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    let job_card = document.querySelectorAll(".job-card");
+    job_card.forEach(card => {
+        let read_more = card.querySelector("a.btn.btn-outline.read_more");
+        let job_details = card.querySelector(".job_details");
+        read_more.addEventListener("click", function(){
+            job_details.style.display = "block";
+            document.body.style.overflow = "hidden";
+        })
+        let job_details_cross_icon = card.querySelector(".cross_icon");
+        job_details_cross_icon.addEventListener("click", function(){
+            job_details.style.display = "none";
+            document.body.style.overflow = "auto"
+        })
+    })
+
+    let apply_now = document.querySelectorAll(".apply_now");
+    apply_now.forEach(button => {
+      button.addEventListener("click", function(e){
+        e.preventDefault();
+        let form_section = document.querySelector("#shopify-section-template--24711345766675__1750148717a1c34670 div#shopify-block-AbXFoSjVJVFRQTm1ON__forms_inline_tKFw9G");
+        if (form_section) {
+          form_section.scrollIntoView({ behavior: "smooth" });
+        }
+      })
+    })
+  })
+</script>
+
+{% schema %}
+  {
+    "name": "Job Openings",
+    "settings": [
+      {
+        "type": "text",
+        "id": "desktop_padding",
+        "label": "Desktop Padding"
+      },
+      {
+        "type": "text",
+        "id": "mobile_padding",
+        "label": "Mobile Padding"
+      },
+    ],
+    "blocks": [{
+      "type": "job_card",
+      "name": "Job Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "job_title",
+          "label": "Job Title"
+        },
+        {
+          "type": "text",
+          "id": "job_summary",
+          "label": "Job Summary"
+        },
+        {
+          "type": "richtext",
+          "id": "job_summary_details",
+          "label": "Job Summary Details"
+        },
+      ]
+    }],
+    "presets": [{
+      "name": "Job Openings"
+    }]
+  }
+{% endschema %}

@@ -1,0 +1,141 @@
+<style>
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+</style>
+
+<div class="tab_section_wrapper page-width" id="{{ section.id }}">
+
+  {% if section.blocks.size > 0 %}
+    <div class="actual_tabs">
+      {% for tab in section.blocks %}
+        {% if tab.type == "tab_button" %}
+          <a href="#{{ tab.settings.tab_id | replace: " ", "" | downcase }}" class="tab-link {% if forloop.index == 1 %}active{% endif %}">{{ tab.settings.tab_label }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="tabs_associated_sections">
+    {% for tab_section in section.blocks %}
+      {% if tab_section.type == "tab_section" %}
+        {% if tab_section.settings.section_label %}
+          <div id="{{ tab_section.settings.section_id  | replace: " ", "" | downcase }}" class="tab_associated_section {% if tab_section.settings.section_borders %}show_section_border{% endif %} {% if forloop.index == 3 %}show_featured_collection{% else %}animated_remove_collection{% endif %}">
+            {{ tab_section.settings.section_label }}
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+
+</div>
+
+<script>
+ window.addEventListener("DOMContentLoaded", function(){
+  let video_tabs = document.querySelectorAll("#{{ section.id }} .actual_tabs .tab-link");
+  let video_sections = document.querySelectorAll("#{{ section.id }} .tabs_associated_sections .tab_associated_section");
+
+  video_tabs.forEach(tab => {
+    tab.addEventListener("click", function(e){
+      e.preventDefault();
+
+      let tab_id = this.getAttribute("href").replace("#", "").trim();
+
+      // Remove active class from all tabs
+      video_tabs.forEach(t => t.classList.remove("active"));
+      // Add active class to current tab
+      tab.classList.add("active");
+
+      // Toggle section visibility
+      video_sections.forEach(section => {
+        if (section.id.trim() === tab_id) {
+          section.classList.add("show_featured_collection");
+          section.classList.remove("animated_remove_collection");
+        } else {
+          section.classList.remove("show_featured_collection");
+          section.classList.add("animated_remove_collection");
+        }
+      });
+    });
+  });
+});
+
+
+</script>
+
+{% schema %}
+{
+  "name": "Tab testimonial",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "max": 60,
+      "min": 0,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "max": 60,
+      "min": 0,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab_button",
+      "name": "Tab Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_id",
+          "label": "ID"
+        },
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Label"
+        }
+      ]
+    },
+    {
+      "type": "tab_section",
+      "name": "Tab Section",
+      "settings": [
+        {
+          "type": "text",
+          "id": "section_id",
+          "label": "ID"
+        },
+        {
+          "type": "text",
+          "id": "section_label",
+          "label": "Label"
+        },
+        {
+          "type": "checkbox",
+          "id": "section_borders",
+          "label": "Show Borders",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "@app",
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tab testimonial"
+    }
+  ]
+}
+{% endschema %}
